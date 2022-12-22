@@ -1,0 +1,27 @@
+Source: node-test
+Section: javascript
+Priority: optional
+Maintainer: Debian Javascript Maintainers <pkg-javascript-devel@lists.alioth.debian.org>
+Uploaders: Sruthi Chandran <srud@disroot.org>,
+           Bastien Roucariès <rouca@debian.org>
+Build-Depends: debhelper-compat (= 13)
+ , dh-sequence-nodejs
+ , node-ansi-font <!nocheck>
+Standards-Version: 4.6.0
+Vcs-Browser: https://salsa.debian.org/js-team/node-test
+Vcs-Git: https://salsa.debian.org/js-team/node-test.git
+Homepage: https://github.com/Gozala/test-commonjs/
+Testsuite: autopkgtest-pkg-nodejs
+Rules-Requires-Root: no
+
+Package: node-test
+Architecture: all
+Depends: ${misc:Depends}
+ , node-ansi-font
+Description: (Un)CommonJS test runner
+ Implementation of (Un)commonJS unit test runner.
+ .
+ This module allow one to create test suite that could be
+ run using npm test command.
+ .
+ Node.js is an event-based server-side JavaScript engine.

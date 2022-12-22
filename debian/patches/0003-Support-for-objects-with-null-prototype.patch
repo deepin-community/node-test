@@ -1,0 +1,73 @@
+From 01f2f2bad650bd2647989e444b9b67d17be7e391 Mon Sep 17 00:00:00 2001
+From: Mariusz Nowak <mariusz@medikoo.com>
+Date: Mon, 2 Sep 2013 16:01:05 +0200
+Subject: Support for objects with null prototype
+
+Currently assert.deepEqual crashes when we compare objects that derive from null.
+
+origin: https://github.com/Gozala/test-commonjs/pull/8/commits/b53cf06a160ad6f68363deb22e09b3921298c5fa
+bug: https://github.com/Gozala/test-commonjs/pull/8
+---
+ test/assert.js | 11 +++++++++--
+ utils.js       |  6 ++++--
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/test/assert.js b/test/assert.js
+index 6ec8f78..f6fd185 100644
+--- a/test/assert.js
++++ b/test/assert.js
+@@ -96,21 +96,28 @@ exports["test correctness of `assert.equal`"] = function (assert) {
+ }
+ 
+ exports["test correctness of `assert.deepEqual`"] = function (assert) {
+-  var valid, invalid, report
++  var valid, invalid, report, toString
+   valid = [
+     [ [], [] ],
+     [ {}, {} ],
++    [ Object.create(null), Object.create(null) ],
+   ]
+   invalid = [
+     [ [], undefined ],
+     [ [], [1] ]
+   ]
+   report = null
++  toString = function (x) {
++    if (x.toString) {
++      return x.toString();
++    }
++    return Object.prototype.toString.call(x)
++  }
+ 
+   run({
+     "test fixture": function (assert) {
+       valid.forEach(function (value, index) {
+-        var message = "`" + value[0] + "` is deepEqual of `" + value[1] + "`"
++        var message = "`" + toString(value[0]) + "` is deepEqual of `" + toString(value[1]) + "`"
+         assert.deepEqual(value[0], value[1], message)
+       })
+ 
+diff --git a/utils.js b/utils.js
+index 3d0130b..e768b5a 100644
+--- a/utils.js
++++ b/utils.js
+@@ -183,6 +183,7 @@ exports.isJSON = function (value) {
+  * function from different iframe / jetpack module / sandbox).
+  */
+ function instanceOf(value, Type) {
++  var constructor;
+   var isConstructorNameSame;
+   var isConstructorSourceSame;
+ 
+@@ -194,8 +195,9 @@ function instanceOf(value, Type) {
+   // of the value"s prototype has same name and source we assume that it"s an
+   // instance of the Type.
+   if (!isInstanceOf && value) {
+-    isConstructorNameSame = value.constructor.name === Type.name;
+-    isConstructorSourceSame = String(value.constructor) == String(Type);
++    constructor = value.constructor;
++    isConstructorNameSame = constructor && (constructor.name === Type.name);
++    isConstructorSourceSame = String(constructor) == String(Type);
+     isInstanceOf = (isConstructorNameSame && isConstructorSourceSame) ||
+                     instanceOf(Object.getPrototypeOf(value), Type);
+   }

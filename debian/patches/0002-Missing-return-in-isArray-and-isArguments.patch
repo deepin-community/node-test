@@ -1,0 +1,34 @@
+From f0797ad7ff30c2b13aff34c9c31f8aa7b87ae8fd Mon Sep 17 00:00:00 2001
+From: David Sturley <david.sturley@deque.com>
+Date: Fri, 28 Dec 2012 14:17:34 -0500
+Subject: Missing return in isArray and isArguments
+
+forwarded: https://github.com/Gozala/test-commonjs/pull/7
+bug: https://github.com/Gozala/test-commonjs/pull/7
+origin: https://github.com/Gozala/test-commonjs/commit/675d14fe69887bead738412ffc728e583d59e7b4
+---
+ utils.js | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/utils.js b/utils.js
+index ceeef93..3d0130b 100644
+--- a/utils.js
++++ b/utils.js
+@@ -91,7 +91,7 @@ exports.isObject = isObject;
+  *    isArray({ 0: "foo", length: 1 }) // false
+  */
+ var isArray = Array.isArray || function isArray(value) {
+-  Object.prototype.toString.call(value) === "[object Array]";
++  return Object.prototype.toString.call(value) === "[object Array]";
+ }
+ exports.isArray = isArray;
+ 
+@@ -102,7 +102,7 @@ exports.isArray = isArray;
+  *    isArguments([1,2,3]); // false
+  */
+ function isArguments(value) {
+-  Object.prototype.toString.call(value) === "[object Arguments]";
++  return Object.prototype.toString.call(value) === "[object Arguments]";
+ }
+ exports.isArguments = isArguments;
+ 

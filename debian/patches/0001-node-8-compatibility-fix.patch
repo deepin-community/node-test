@@ -1,0 +1,24 @@
+From 306301fedd052bb2e047ad744dede8cf6d909326 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Lal?= <kapouer@melix.org>
+Date: Thu, 7 Jun 2018 18:21:08 +0200
+Subject: node >= 8 compatibility fix
+
+Last-Update: 2018-01-04
+Forwarded: https://github.com/Gozala/test-commonjs/pull/14
+---
+ test.js | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test.js b/test.js
+index 3a17e3c..f751076 100644
+--- a/test.js
++++ b/test.js
+@@ -41,7 +41,7 @@ function Test(name, unit, logger, Assert) {
+         if (isSync) assert.end()
+       }
+     } catch (exception) {
+-      if (ERR_EXPECT === exception.name) assert.fail(exception)
++      if (exception.name && exception.name.startsWith(ERR_EXPECT)) assert.fail(exception)
+       else logger.error(exception)
+       assert.end()
+     }
